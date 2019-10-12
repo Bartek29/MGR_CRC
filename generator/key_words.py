@@ -46,6 +46,10 @@ class Line(KeyWord):
         tokens = txt.split()
         if len(tokens) != 3:
             Logger().error("Wrong number of tokens")
+            raise ValueError
+        if str(tokens[0]).lower() != Line.kLine:
+            Logger().error("Wrong tag name")
+            raise ValueError
         try:
             return Line(str(tokens[1]), str(tokens[2]))
         except:
