@@ -22,6 +22,8 @@ class Parser(object):
     def parse(self):
         lines = self._get_text_lines()
         for line in lines:
+            if len(line) > 0 and line[0] == '#':
+                continue
             if line.split()[0].lower() == Point.kPoint:
                 t = Point.parse(line)
                 self._points[t.name] = t
