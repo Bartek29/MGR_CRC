@@ -29,7 +29,7 @@ class Painter(object):
                  3.0 * pow(u, 2) * (1.0 - u) * float(p3.y) + \
                  pow(u, 3) * float(p4.y)
             self._canvas.paint_dot(int(xu), int(yu))
-            u += 0.0001
+            u += 0.01
 
     def line(self, p1: Point, p2: Point):
         if abs(p2.y - p1.y) < abs(p2.x - p1.x):
