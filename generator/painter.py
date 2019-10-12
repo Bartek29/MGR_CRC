@@ -14,6 +14,23 @@ class Painter(object):
             "BMP": BMPCanvas(100, 100, paint_chance_rnd)
         }[canvas]
 
+    def write(self, file_name):
+        self._canvas.write(file_name)
+
+    def bezier(self, p1: Point, p2: Point, p3: Point, p4: Point):
+        u = 0.0
+        while u <= 1.0:
+            xu = pow(1.0 - u, 3) * float(p1.x) + \
+                 3.0 * u * pow(1.0 - u, 2) * float(p2.x) + \
+                 3.0 * pow(u, 2) * (1.0 - u) * float(p3.x) + \
+                 pow(u, 3) * float(p4.x)
+            yu = pow(1.0 - u, 3) * float(p1.y) + \
+                 3.0 * u * pow(1.0 - u, 2) * float(p2.y) + \
+                 3.0 * pow(u, 2) * (1.0 - u) * float(p3.y) + \
+                 pow(u, 3) * float(p4.y)
+            self._canvas.paint_dot(int(xu), int(yu))
+            u += 0.0001
+
     def line(self, p1: Point, p2: Point):
         if abs(p2.y - p1.y) < abs(p2.x - p1.x):
             if p1.x > p2.x:
@@ -25,7 +42,6 @@ class Painter(object):
                 self._line_high(p2.x, p2.y, p1.x, p1.y)
             else:
                 self._line_high(p1.x, p1.y, p2.x, p2.y)
-        self._canvas.write("test.bmp")
 
     def _line_low(self, x0, y0, x1, y1):
         dx = x1 - x0
@@ -68,14 +84,14 @@ class Painter(object):
 
 class ICanvas(ABC):
     @abstractmethod
-    def paint_dot(self, x, y, size=1, randomness=0):
+    def paint_dot(self, x, y, size=1):
         raise NotImplementedError
 
 
 class DummyCanvas(ICanvas):
-    def paint_dot(self, x, y, size=1, randomness=0):
-        Logger().info("Dummy paint x[{}] y[{}] s[{}] r[{}]".format(
-            x, y, size, randomness))
+    def paint_dot(self, x, y, size=1):
+        Logger().info("Dummy paint x[{}] y[{}] s[{}]".format(
+            x, y, size))
 
 
 class BMPCanvas(ICanvas):
@@ -100,7 +116,7 @@ class BMPCanvas(ICanvas):
     def clear(self):
         self._graphics = [BMPCanvas.CLR_WHITE] * self._bcWidth * self._bcHeight
 
-    def paint_dot(self, x, y, size=2, randomness=0):
+    def paint_dot(self, x, y, size=2):
         x_ = x - size
         while x_ <= x + size:
             y_ = y - size
