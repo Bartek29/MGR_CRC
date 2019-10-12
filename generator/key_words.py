@@ -19,6 +19,10 @@ class Point(KeyWord):
         tokens = txt.split()
         if len(tokens) != 4:
             Logger().error("Wrong number of tokens")
+            raise ValueError
+        if str(tokens[0]).lower() != Point.kPoint:
+            Logger().error("Wrong tag name")
+            raise ValueError
         try:
             return Point(str(tokens[1]), int(tokens[2]), int(tokens[3]))
         except:
