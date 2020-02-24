@@ -20,10 +20,8 @@ AUTOTUNE = tf.data.experimental.AUTOTUNE
 #                                    'https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz',
 #                                    untar=True)
 # data_dir = pathlib.Path(data_dir)
-data_dir = pathlib.Path("/home/bartek/mgr/database/real_train")
-
-# label_names = {'daisy': 0, 'dandelion': 1, 'roses': 2, 'sunflowers': 3, 'tulips': 4}
-# label_key = ['daisy', 'dandelion', 'roses', 'sunflowers', 'tulips']
+data_dir = pathlib.Path("/home/bartek/mgr/database/gen_train")
+test_dir = pathlib.Path("/home/bartek/mgr/database/real_test")
 
 label_names = {
     "a_capital": 0,
@@ -84,10 +82,14 @@ label_key = [
 ]
 
 all_images = list(data_dir.glob('*/*'))
+test_images = list(test_dir.glob('*/*'))
 all_images = [str(path) for path in all_images]
+test_images = [str(path) for path in test_images]
 random.shuffle(all_images)
+random.shuffle(test_images)
 
 all_labels = [label_names[pathlib.Path(path).parent.name] for path in all_images]
+test_labels = [label_names[pathlib.Path(path).parent.name] for path in test_images]
 
 data_size = len(all_images)
 
@@ -100,7 +102,6 @@ y_train = all_labels[train_test_split:]
 y_test = all_labels[:train_test_split]
 
 IMG_SIZE = 32
-
 BATCH_SIZE = 32
 
 
@@ -130,6 +131,7 @@ def _input_fn(x, y):
 
 train_ds = _input_fn(x_train, y_train)
 validation_ds = _input_fn(x_test, y_test)
+test_ds = _input_fn(test_images, test_labels)
 
 IMG_SHAPE = (IMG_SIZE, IMG_SIZE, 3)
 VGG16_MODEL = tf.keras.applications.VGG16(input_shape=IMG_SHAPE,
@@ -155,14 +157,13 @@ model.compile(optimizer=tf.train.AdamOptimizer(),
 
 
 history = model.fit(train_ds,
-                    epochs=10,
-                    steps_per_epoch=500,
-                    validation_steps=14,
+                    epochs=40,
+                    steps_per_epoch=1000 ,
+                    validation_steps=20,
                     validation_data=validation_ds)
 
-validation_steps = 20
-
-loss0, accuracy0 = model.evaluate(validation_ds, steps=validation_steps)
+validation_steps = 500
+loss0, accuracy0 = model.evaluate(test_ds, steps=validation_steps)
 
 print("loss: {:.2f}".format(loss0))
 print("accuracy: {:.2f}".format(accuracy0))

@@ -1,26 +1,30 @@
-# from common.logger import Logger
-# from generator.parser import Parser
-# from PIL import Image
-#
-# Logger.set_level(Logger.INFO)
-# for i in range(2000):
-#     # Logger().error("Create {}/2000".format(i))
-#     p = Parser("schemas/h_capital_1.sch",
-#                move_point_rnd=2,
-#                paint_chance_rnd=0.8)
-#     p.parse()
-#     p.paint()
-#     img = Image.open('test.bmp')
-#
-#     new_img = img.resize((128, 128))
-#     new_img.save('database/gen_train/h_capital/train_{:04d}.png'.format(i), 'png')
-#
-# exit()
+from common.logger import Logger
+from generator.parser import Parser
+from PIL import Image
+
+Logger.set_level(Logger.INFO)
+chars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
+         'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
+for c in chars:
+    for i in range(2000):
+        Logger().error("Create {}: {}/2000".format(c, i))
+        p = Parser("schemas/{}_capital_1.sch".format(c),
+                   move_point_rnd=2,
+                   paint_chance_rnd=0.8)
+        p.parse()
+        p.paint()
+        img = Image.open('test.bmp')
+
+        new_img = img.resize((32, 32))
+        new_img.save('database/gen_train/{}_capital/train_{:04d}.png'.format(c, i), 'png')
+
+exit()
+
 
 import tensorflow as tf  # deep learning library. Tensors are just multi-dimensional arrays
 
 datagen = tf.keras.preprocessing.image.ImageDataGenerator()
-train_it = datagen.flow_from_directory('database/real_train/',
+train_it = datagen.flow_from_directory('database/gen_train/',
                                        # batch_size=64,
                                        target_size=(32, 32),
                                        class_mode="sparse")
@@ -119,7 +123,7 @@ history = model.fit(train_it,
                     epochs=100,
                     steps_per_epoch=2,
                     validation_steps=2,
-                    # validation_data=test_it
+                    validation_data=test_it
                     )
 
 # 2 classes:

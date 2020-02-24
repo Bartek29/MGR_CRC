@@ -11,7 +11,7 @@ class Painter(object):
     def __init__(self, canvas, paint_chance_rnd=1.0):
         self._canvas = {
             "Dummy": DummyCanvas(),
-            "BMP": BMPCanvas(100, 100, paint_chance_rnd)
+            "BMP": BMPCanvas(32, 32, paint_chance_rnd)
         }[canvas]
 
     def write(self, file_name):
@@ -122,7 +122,7 @@ class BMPCanvas(ICanvas):
             y_ = y - size
             while y_ <= y + size:
                 if (x - x_) * (x - x_) + (y - y_) * (y - y_) < size * size and \
-                        0 <= x_ < 100 and 0 <= y < 100 and \
+                        0 <= x_ < self._bcWidth and 0 <= y_ < self._bcHeight and \
                         random.uniform(0.0, 1.0) < self._paint_chance_rnd:
                     self._paint_single_dot(x_, y_)
                 y_ += 1
