@@ -16,12 +16,9 @@ tf.enable_eager_execution()
 
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 
-# data_dir = tf.keras.utils.get_file('flower_photos',
-#                                    'https://storage.googleapis.com/download.tensorflow.org/example_images/flower_photos.tgz',
-#                                    untar=True)
-# data_dir = pathlib.Path(data_dir)
-data_dir = pathlib.Path("/home/bartek/mgr/database/gen_train")
-test_dir = pathlib.Path("/home/bartek/mgr/database/real_test")
+PATH = "/"
+data_dir = pathlib.Path(PATH + "database/gen_train")
+test_dir = pathlib.Path(PATH + "database/real_test")
 
 label_names = {
     "a_capital": 0,

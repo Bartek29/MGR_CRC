@@ -1,27 +1,9 @@
 from common.logger import Logger
 from generator.parser import Parser
 from PIL import Image
+import tensorflow as tf
 
 Logger.set_level(Logger.INFO)
-chars = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l',
-         'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z']
-for c in chars:
-    for i in range(2000):
-        Logger().error("Create {}: {}/2000".format(c, i))
-        p = Parser("schemas/{}_capital_1.sch".format(c),
-                   move_point_rnd=2,
-                   paint_chance_rnd=0.8)
-        p.parse()
-        p.paint()
-        img = Image.open('test.bmp')
-
-        new_img = img.resize((32, 32))
-        new_img.save('database/gen_train/{}_capital/train_{:04d}.png'.format(c, i), 'png')
-
-exit()
-
-
-import tensorflow as tf  # deep learning library. Tensors are just multi-dimensional arrays
 
 datagen = tf.keras.preprocessing.image.ImageDataGenerator()
 train_it = datagen.flow_from_directory('database/gen_train/',
@@ -33,44 +15,6 @@ test_it = datagen.flow_from_directory('database/real_test/',
                                       # batch_size=64,
                                       target_size=(32, 32),
                                       class_mode="sparse")
-
-# model = tf.keras.models.Sequential()
-# model.add(tf.keras.layers.Flatten())
-# model.add(tf.keras.layers.Dense(350, activation=tf.nn.relu))
-# model.add(tf.keras.layers.Dense(150, activation=tf.nn.relu))
-# model.add(tf.keras.layers.Dense(50, activation=tf.nn.relu))
-# model.add(tf.keras.layers.Dense(10, activation=tf.nn.softmax))
-
-
-
-# model = tf.keras.models.Sequential()
-#
-# model.add(tf.keras.layers.Conv2D(32, (3, 3), input_shape=(32, 32, 3)))
-# model.add(tf.keras.layers.Activation('relu'))
-# model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
-#
-# model.add(tf.keras.layers.Conv2D(32, (3, 3)))
-# model.add(tf.keras.layers.Activation('relu'))
-# model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
-#
-# model.add(tf.keras.layers.Conv2D(64, (3, 3)))
-# model.add(tf.keras.layers.Activation('relu'))
-# model.add(tf.keras.layers.MaxPooling2D(pool_size=(2, 2)))
-#
-# model.add(tf.keras.layers.Flatten())
-# model.add(tf.keras.layers.Dense(64))
-# model.add(tf.keras.layers.Activation('relu'))
-# model.add(tf.keras.layers.Dropout(0.5))
-# model.add(tf.keras.layers.Dense(26))
-# model.add(tf.keras.layers.Activation('sigmoid'))
-
-# model.compile(optimizer='rmsprop',
-#               loss='categorical_crossentropy',
-#               metrics=['accuracy'])
-#
-# model.fit_generator(train_it, epochs=1000, validation_steps=8)
-# loss = model.evaluate_generator(test_it, steps=24)
-# print(loss)
 
 label_names = [
     "a_capital",
@@ -126,10 +70,4 @@ history = model.fit(train_it,
                     validation_data=test_it
                     )
 
-# 2 classes:
-# gen [181.09806474049887, 0.8313802]
-# real [13.652371724446615, 0.99283856]
-# 10 classes:
-# gen [2512.6373901367188, 0.1953125]
-# real [2.1766373813152313, 0.2467448]
 model.save('crc.model')

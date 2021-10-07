@@ -1,6 +1,8 @@
 import os
 from PIL import Image
 
+DEBUG = false
+
 files = []
 # r=root, d=directories, f = files
 for r, d, f in os.walk('database/real_test/'):
@@ -8,7 +10,7 @@ for r, d, f in os.walk('database/real_test/'):
         files.append(os.path.join(r, file))
 
 for index, f in enumerate(files):
-    if index % 1000 == 0:
+    if DEBUG and index % 1000 == 0:
         print("{}/{} {}% | {}".format(index, len(files), index / len(files) * 100.0, f))
     img = Image.open(f)
     pixel_map = img.load()
